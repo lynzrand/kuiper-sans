@@ -1,6 +1,6 @@
 ﻿module Rynco.KuiperSans.Program
 
-type table_dir = {
+type TableDirectory = {
   version: uint32
   n_tables: uint16
   search_range: uint16
@@ -8,7 +8,7 @@ type table_dir = {
   range_shift: uint16
 }
 
-type table_record = {
+type TableRecord = {
   tag: uint32
   checksum: uint32
   offset: uint32

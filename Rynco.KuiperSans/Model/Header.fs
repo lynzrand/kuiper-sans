@@ -3,7 +3,7 @@ module Rynco.KuiperSans.Model.Header
 open Rynco.KuiperSans.Util.Writer
 
 [<System.Flags>]
-type header_flags =
+type HeaderFlags =
   | BaselineY0 = 0x0001us
   | LeftSidebearingX0 = 0x0002us
   | InstructionsDependOnPointSize = 0x0004us
@@ -14,17 +14,17 @@ type header_flags =
   | OptimizedForClearType = 0x2000us
   | LastResortFont = 0x4000us
 
-type index_to_loc_format =
+type IndexToLocFormat =
   | Short = 0us
   | Long = 1us
 
-type header_table = {
+type HeaderTable = {
   major_version: uint16
   minor_version: uint16
   font_revision: uint32
   checksum_adjustment: uint32
   magic_number: uint32
-  flags: header_flags
+  flags: HeaderFlags
   units_per_em: uint16
   created: uint64
   modified: uint64
@@ -35,15 +35,15 @@ type header_table = {
   mac_style: uint16
   lowest_rec_ppem: uint16
   font_direction_hint: int16
-  index_to_loc_format: index_to_loc_format
+  index_to_loc_format: IndexToLocFormat
   glyph_data_format: int16
 }
 
-let write_header_table (hdr: header_table) (w: BinaryWriter) =
+let write_header_table (hdr: HeaderTable) (w: BinaryWriter) =
   write_u16_be w hdr.major_version
   write_u16_be w hdr.minor_version
   write_u32_be w hdr.font_revision
-  write_u32_be w hdr.checksum_adjustment
+  write_u32_be w hdr.checksum_adjustment // FIXME: This value needs to be written back after the table is written
   write_u32_be w hdr.magic_number
   write_u16_be w (uint16 hdr.flags)
   write_u16_be w hdr.units_per_em
