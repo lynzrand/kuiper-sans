@@ -12,7 +12,7 @@ The name "Kuiper Sans" is currently a placeholder.
   - [ ] TTF Required tables
     - [ ] cmap - Character to glyph mapping
     - [x] head - Font header
-    - [ ] hhea - Horizontal header
+    - [x] hhea - Horizontal header
     - [ ] hmtx - Horizontal metrics
     - [ ] maxp - Maximum profile
     - [x] name - Naming table

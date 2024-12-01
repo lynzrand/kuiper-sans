@@ -38,7 +38,7 @@ type HeaderTable = {
   mac_style: uint16
   lowest_rec_ppem: uint16
   font_direction_hint: int16
-  index_to_loc_format: IndexToLocFormat
+  // index_to_loc_format: IndexToLocFormat
   glyph_data_format: int16
 }
 
@@ -59,5 +59,6 @@ let write_header_table (hdr: HeaderTable) (w: BinaryWriter) =
   write_u16_be w hdr.mac_style
   write_u16_be w hdr.lowest_rec_ppem
   write_i16_be w hdr.font_direction_hint
-  write_u16_be w (uint16 hdr.index_to_loc_format)
+  // write_u16_be w (uint16 hdr.index_to_loc_format)
+  write_u16_be w (uint16 IndexToLocFormat.Long)
   write_i16_be w hdr.glyph_data_format

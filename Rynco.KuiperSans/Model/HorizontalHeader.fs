@@ -1,7 +1,6 @@
 /// Implementation of the OpenType `hhea` table.
 ///
 /// See: https://learn.microsoft.com/zh-cn/typography/opentype/spec/hhea
-/// See: https://learn.microsoft.com/zh-cn/typography/opentype/spec/hhea
 module Rynco.KuiperSans.Model.HorizontalHeader
 
 open Rynco.KuiperSans.Util.Writer

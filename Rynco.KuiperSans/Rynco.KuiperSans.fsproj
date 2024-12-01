@@ -9,9 +9,12 @@
     <Compile Include="Util/Writer.fs" />
     <Compile Include="Util/Math.fs" />
     
+    <Compile Include="Model/GlyphData.fs" />
     <Compile Include="Model/Header.fs"/>
     <Compile Include="Model/HorizontalHeader.fs" />
+    <Compile Include="Model/HorizontalMetrics.fs" />
     <Compile Include="Model/NameTable.fs" />
+    <Compile Include="Model/PostScriptData.fs" />
 
     <Compile Include="Program.fs" />
 </ItemGroup>
