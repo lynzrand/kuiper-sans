@@ -8,13 +8,13 @@ open Rynco.KuiperSans.Util.Writer
 
 
 /// The version of the name table. Always 1.
-let name_table_version = 1us
+let private name_table_version = 1us
 
 /// The platform ID. Always 0 (Unicode platform)
-let platform_id = 0us
+let private platform_id = 0us
 
 /// The encoding ID. Always 4 (Unicode 2.0+ full repertoire)
-let encoding_id = 4us
+let private encoding_id = 4us
 
 type NameId =
   | Copyright = 0us
@@ -58,7 +58,7 @@ type NameRecord = {
 type NameTable = { records: NameRecord list }
 
 /// An encoded name record, with the language ID gathered from existing records information
-type EncodedNameRecord = {
+type private EncodedNameRecord = {
   lang_id: uint16
   name_id: uint16
   value: string

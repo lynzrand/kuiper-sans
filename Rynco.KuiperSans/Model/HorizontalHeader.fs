@@ -7,8 +7,8 @@ module Rynco.KuiperSans.Model.HorizontalHeader
 open Rynco.KuiperSans.Util.Writer
 open Rynco.KuiperSans.Util.Math
 
-let major_version = 1us
-let minor_version = 0us
+let private major_version = 1us
+let private minor_version = 0us
 
 type HorizontalHeader = {
   ascender: fword
