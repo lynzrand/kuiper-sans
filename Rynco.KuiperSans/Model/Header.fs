@@ -1,3 +1,6 @@
+/// Implementation of the OpenType `head` table.
+///
+/// https://learn.microsoft.com/zh-cn/typography/opentype/spec/head
 module Rynco.KuiperSans.Model.Header
 
 open Rynco.KuiperSans.Util.Writer

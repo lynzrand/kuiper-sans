@@ -1,6 +1,11 @@
+/// Implementation of the OpenType `name` table, which contains human-readable
+/// names for the font.
+///
+/// See: https://learn.microsoft.com/zh-cn/typography/opentype/spec/name
 module Rynco.KuiperSans.Model.NameTable
 
 open Rynco.KuiperSans.Util.Writer
+
 
 /// The version of the name table. Always 1.
 let name_table_version = 1us
