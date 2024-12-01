@@ -1,6 +1,6 @@
 # Kuiper Sans (仮)
 
-Kuiper Sans is a font built from code. The font is inspired by Belleve Invis's [Iosevka][].
+Kuiper Sans is a font built from code. The font is inspired by Belleve Invis's [Iosevka][]. Always want to do that. Unsure if this project will ever finish.
 
 The name "Kuiper Sans" is currently a placeholder.
 
@@ -13,16 +13,16 @@ The name "Kuiper Sans" is currently a placeholder.
     - [ ] cmap - Character to glyph mapping
     - [x] head - Font header
     - [x] hhea - Horizontal header
-    - [ ] hmtx - Horizontal metrics
+    - [x] hmtx - Horizontal metrics
     - [ ] maxp - Maximum profile
     - [x] name - Naming table
     - [ ] OS/2 - OS/2 and Windows specific metrics
-    - [ ] post - PostScript information
+    - [x] post - PostScript information
   - [ ] Tables Related to TrueType Outlines
     - [ ] cvt - Control Value Table (optional table)
     - [ ] fpgm - Font program (optional table)
-    - [ ] glyf - Glyph data
-    - [ ] loca - Index to location
+    - [x] glyf - Glyph data
+    - [x] loca - Index to location
     - [ ] prep - Control Value Program (optional table)
     - [ ] gasp - Grid-fitting/Scan-conversion (optional table)
   - [ ] Math and stroke functions
