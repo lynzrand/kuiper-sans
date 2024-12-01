@@ -6,8 +6,11 @@
   </PropertyGroup>
 
 <ItemGroup>
+    <Compile Include="Util/Writer.fs" />
+    <Compile Include="Util/Math.fs" />
+    
+    <Compile Include="Model/Header.fs" />
     <Compile Include="Program.fs" />
-    <Compile Include="Extensions.fs" />
 </ItemGroup>
 
 </Project>
