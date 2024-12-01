@@ -5,8 +5,9 @@
     <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
+<ItemGroup>
     <Compile Include="Program.fs" />
-  </ItemGroup>
+    <Compile Include="Extensions.fs" />
+</ItemGroup>
 
 </Project>
