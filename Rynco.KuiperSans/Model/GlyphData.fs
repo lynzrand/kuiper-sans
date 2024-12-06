@@ -1,4 +1,4 @@
-/// Implementation of the `glyf` and `loca` tables, which contains glyph data.
+/// Implementation of the `glyf`, `loca` and `maxp` tables, which contains glyph data.
 ///
 /// See: https://learn.microsoft.com/zh-cn/typography/opentype/spec/glyf
 module Rynco.KuiperSans.Model.GlyphData
@@ -83,6 +83,27 @@ type GlyphTable = { contents: GlyphData[] }
 /// The actual location table structure. Should be generated from the `glyf` table during serialization.
 type LocationTable = { offsets: uint32[] }
 
+type MaxZonesKind =
+  | DoesNotUseTwilightZone = 1us
+  | UsesTwilightZone = 2us
+
+type MaxProfileTable = {
+  n_glyphs: uint16
+  max_points: uint16
+  max_countours: uint16
+  max_composite_points: uint16
+  max_composite_countours: uint16
+  max_zones: MaxZonesKind
+  max_twilight_points: uint16
+  max_storage: uint16
+  max_func_defs: uint16
+  max_instruction_defs: uint16
+  max_stack_elements: uint16
+  max_size_of_instructions: uint16
+  max_component_elements: uint16
+  max_component_depth: uint16
+}
+
 open Rynco.KuiperSans.Util.Writer
 
 let private write_glyph (glyph: GlyphData) (w: BinaryWriter) =
@@ -162,3 +183,98 @@ let write_glyph_table (glyf: GlyphTable) (w: BinaryWriter) : LocationTable =
 
   let loca_offsets = loca_offsets_rev |> List.rev |> List.toArray
   { offsets = loca_offsets }
+
+let write_location_table (loca: LocationTable) (w: BinaryWriter) =
+  for offset in loca.offsets do
+    write_u32_be w offset
+
+type private CompositeData = {
+  n_points: int
+  n_countours: int
+  depth: int
+}
+
+let private merge_composite_data (data: CompositeData array) =
+  let n_points = data |> Array.sumBy (fun d -> d.n_points)
+  let n_countours = data |> Array.sumBy (fun d -> d.n_countours)
+  let depth = data |> Array.maxBy (fun d -> d.depth) |> (fun d -> d.depth + 1)
+  {
+    n_points = n_points
+    n_countours = n_countours
+    depth = depth
+  }
+
+let rec private calc_maxp_for_composite (glyf: GlyphTable) (data: CompositeGlyphData array) =
+  data
+  |> Array.map (fun d ->
+    let glyph = glyf.contents[int d.glyphIndex]
+    match glyph.data with
+    | Simple simple -> {
+        n_points = simple.x_coordinates.Length
+        n_countours = simple.contour_end_point_indices.Length
+        depth = 1
+      }
+    | Composite composite ->
+      let sub_data = calc_maxp_for_composite glyf composite
+      merge_composite_data sub_data
+  )
+
+let generate_maxp (glyf: GlyphTable) : MaxProfileTable =
+  let mutable max_points = 0us
+  let mutable max_countours = 0us
+  let mutable max_composite_points = 0us
+  let mutable max_composite_countours = 0us
+  let mutable max_twilight_points = 0us
+  let mutable max_storage = 0us
+  let mutable max_func_defs = 0us
+  let mutable max_instruction_defs = 0us
+  let mutable max_stack_elements = 0us
+  let mutable max_size_of_instructions = 0us
+  let mutable max_component_elements = 0us
+  let mutable max_component_depth = 0us
+
+  for glyph in glyf.contents do
+    match glyph.data with
+    | Simple simple ->
+      max_points <- max max_points (uint16 simple.x_coordinates.Length)
+      max_countours <- max max_countours (uint16 simple.contour_end_point_indices.Length)
+      max_size_of_instructions <- max max_size_of_instructions (uint16 simple.instructions.Length)
+    | Composite composite ->
+      let data = merge_composite_data (calc_maxp_for_composite glyf composite)
+      max_composite_points <- max max_composite_points (uint16 data.n_points)
+      max_composite_countours <- max max_composite_countours (uint16 data.n_countours)
+      max_component_depth <- max max_component_depth (uint16 data.depth)
+
+  {
+    n_glyphs = uint16 glyf.contents.Length
+    max_points = max_points
+    max_countours = max_countours
+    max_composite_points = max_composite_points
+    max_composite_countours = max_composite_countours
+    max_zones = MaxZonesKind.UsesTwilightZone
+    max_twilight_points = max_twilight_points
+    max_storage = max_storage
+    max_func_defs = max_func_defs
+    max_instruction_defs = max_instruction_defs
+    max_stack_elements = max_stack_elements
+    max_size_of_instructions = max_size_of_instructions
+    max_component_elements = max_component_elements
+    max_component_depth = max_component_depth
+  }
+
+let write_maxp_table (maxp: MaxProfileTable) (w: BinaryWriter) =
+  write_u32_be w 0x00010000u
+  write_u16_be w maxp.n_glyphs
+  write_u16_be w maxp.max_points
+  write_u16_be w maxp.max_countours
+  write_u16_be w maxp.max_composite_points
+  write_u16_be w maxp.max_composite_countours
+  write_u16_be w (uint16 maxp.max_zones)
+  write_u16_be w maxp.max_twilight_points
+  write_u16_be w maxp.max_storage
+  write_u16_be w maxp.max_func_defs
+  write_u16_be w maxp.max_instruction_defs
+  write_u16_be w maxp.max_stack_elements
+  write_u16_be w maxp.max_size_of_instructions
+  write_u16_be w maxp.max_component_elements
+  write_u16_be w maxp.max_component_depth
