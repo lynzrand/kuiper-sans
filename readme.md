@@ -14,7 +14,7 @@ The name "Kuiper Sans" is currently a placeholder.
     - [x] head - Font header
     - [x] hhea - Horizontal header
     - [x] hmtx - Horizontal metrics
-    - [ ] maxp - Maximum profile
+    - [x] maxp - Maximum profile
     - [x] name - Naming table
     - [ ] OS/2 - OS/2 and Windows specific metrics
     - [x] post - PostScript information

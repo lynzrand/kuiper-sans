@@ -64,7 +64,7 @@ type private EncodedNameRecord = {
   value: string
 }
 
-let write_name_table (name_table: NameTable) (w: BinaryWriter) =
+let write_name (name_table: NameTable) (w: BinaryWriter) =
   let name_acc = mk_string_accumulator System.Text.Encoding.BigEndianUnicode // UTF-16BE
 
   // Collect all used languages to make lang tag records

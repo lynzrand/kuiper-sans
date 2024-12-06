@@ -169,7 +169,7 @@ let private write_glyph (glyph: GlyphData) (w: BinaryWriter) =
           write_u8_be w i
 
 /// Writes the glyph table to the binary writer. Also generates the location table to be written.
-let write_glyph_table (glyf: GlyphTable) (w: BinaryWriter) : LocationTable =
+let write_glyf (glyf: GlyphTable) (w: BinaryWriter) : LocationTable =
   let start_pos = w.BaseStream.Position
   let mutable loca_offsets_rev = []
 
@@ -184,7 +184,7 @@ let write_glyph_table (glyf: GlyphTable) (w: BinaryWriter) : LocationTable =
   let loca_offsets = loca_offsets_rev |> List.rev |> List.toArray
   { offsets = loca_offsets }
 
-let write_location_table (loca: LocationTable) (w: BinaryWriter) =
+let write_loca (loca: LocationTable) (w: BinaryWriter) =
   for offset in loca.offsets do
     write_u32_be w offset
 
@@ -262,7 +262,7 @@ let generate_maxp (glyf: GlyphTable) : MaxProfileTable =
     max_component_depth = max_component_depth
   }
 
-let write_maxp_table (maxp: MaxProfileTable) (w: BinaryWriter) =
+let write_maxp (maxp: MaxProfileTable) (w: BinaryWriter) =
   write_u32_be w 0x00010000u
   write_u16_be w maxp.n_glyphs
   write_u16_be w maxp.max_points

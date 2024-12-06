@@ -25,7 +25,7 @@ let verify_hmat (hhea: HorizontalHeader.HorizontalHeader) (hmat: HorizontalMetri
 
 // TODO: verify that len(left_side_bearings) == num_glyphs - len(h_metrics)
 
-let write_hmat (hmat: HorizontalMetrics) (w: BinaryWriter) =
+let write_hmtx (hmat: HorizontalMetrics) (w: BinaryWriter) =
   for i = 0 to hmat.h_metrics.Length - 1 do
     let m = hmat.h_metrics.[i]
     write_u16_be w m.advance_width

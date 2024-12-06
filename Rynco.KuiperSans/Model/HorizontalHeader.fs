@@ -25,7 +25,7 @@ type HorizontalHeader = {
   number_of_hmetrics: uint16
 }
 
-let write_hhea_table (hhea: HorizontalHeader) (w: BinaryWriter) =
+let write_hhea (hhea: HorizontalHeader) (w: BinaryWriter) =
   write_u16_be w major_version
   write_u16_be w minor_version
   write_i16_be w hhea.ascender

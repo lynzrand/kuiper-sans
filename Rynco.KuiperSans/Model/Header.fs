@@ -42,7 +42,7 @@ type HeaderTable = {
   glyph_data_format: int16
 }
 
-let write_header_table (hdr: HeaderTable) (w: BinaryWriter) =
+let write_head (hdr: HeaderTable) (w: BinaryWriter) =
   write_u16_be w hdr.major_version
   write_u16_be w hdr.minor_version
   write_u32_be w hdr.font_revision

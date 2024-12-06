@@ -35,7 +35,7 @@ let default_postscript_data = {
   max_mem_type1 = unknown_mem
 }
 
-let write_post_table (post: PostScriptData) (w: BinaryWriter) =
+let write_post (post: PostScriptData) (w: BinaryWriter) =
   write_u32_be w version
   write_i32_be w (int32 post.italic_angle)
   write_i16_be w post.underline_position
