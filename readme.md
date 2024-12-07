@@ -9,14 +9,14 @@ The name "Kuiper Sans" is currently a placeholder.
 ## Progress
 
 - Support library
-  - [ ] TTF Required tables
+  - [x] TTF Required tables
     - [x] cmap - Character to glyph mapping
     - [x] head - Font header
     - [x] hhea - Horizontal header
     - [x] hmtx - Horizontal metrics
     - [x] maxp - Maximum profile
     - [x] name - Naming table
-    - [ ] OS/2 - OS/2 and Windows specific metrics
+    - [x] OS/2 - OS/2 and Windows specific metrics
     - [x] post - PostScript information
   - [ ] Tables Related to TrueType Outlines
     - [ ] cvt - Control Value Table (optional table)

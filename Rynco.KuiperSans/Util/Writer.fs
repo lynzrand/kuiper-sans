@@ -24,6 +24,8 @@ let write_i8_be (w: BinaryWriter) (value: sbyte) = w.Write(byte value)
 let write_i16_be (w: BinaryWriter) (value: int16) = w.Write(to_be_i16 value)
 let write_i32_be (w: BinaryWriter) (value: int32) = w.Write(to_be_i32 value)
 let write_i64_be (w: BinaryWriter) (value: int64) = w.Write(to_be_i64 value)
+let write_fword (w: BinaryWriter) (value: Math.fword) = write_i16_be w value
+let write_ufword (w: BinaryWriter) (value: Math.ufword) = write_u16_be w value
 
 
 // String accumulator

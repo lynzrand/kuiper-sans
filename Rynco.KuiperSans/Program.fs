@@ -68,6 +68,7 @@ let make_font
   (post: Model.PostScriptData.PostScriptData)
   (glyf: Model.GlyphData.GlyphTable)
   (cmap: Model.CharacterMapping.CharacterMappingTable)
+  (os2: Model.Os2Data.Os2Table)
   : uint8 array =
   let maxp = Model.GlyphData.generate_maxp glyf
 
@@ -81,6 +82,7 @@ let make_font
   let loca_w = new System.IO.MemoryStream()
   let maxp_w = new System.IO.MemoryStream()
   let cmap_w = new System.IO.MemoryStream()
+  let os2_w = new System.IO.MemoryStream()
 
   Model.Header.write_head head (new System.IO.BinaryWriter(head_w))
   Model.HorizontalHeader.write_hhea hhea (new System.IO.BinaryWriter(hhea_w))
@@ -90,6 +92,8 @@ let make_font
   let loca = Model.GlyphData.write_glyf glyf (new System.IO.BinaryWriter(glyf_w))
   Model.GlyphData.write_loca loca (new System.IO.BinaryWriter(loca_w))
   Model.GlyphData.write_maxp maxp (new System.IO.BinaryWriter(maxp_w))
+  Model.CharacterMapping.write_cmap cmap (new System.IO.BinaryWriter(cmap_w))
+  Model.Os2Data.write_os2 os2 (new System.IO.BinaryWriter(os2_w))
 
   // Pad all tables to 4 bytes
   pad_to_4bytes (new System.IO.BinaryWriter(head_w))
@@ -101,6 +105,7 @@ let make_font
   pad_to_4bytes (new System.IO.BinaryWriter(loca_w))
   pad_to_4bytes (new System.IO.BinaryWriter(maxp_w))
   pad_to_4bytes (new System.IO.BinaryWriter(cmap_w))
+  pad_to_4bytes (new System.IO.BinaryWriter(os2_w))
 
   let alloc = { tables = [] }
   add_table "head" (head_w.GetBuffer()) alloc
@@ -112,6 +117,7 @@ let make_font
   add_table "loca" (loca_w.GetBuffer()) alloc
   add_table "maxp" (maxp_w.GetBuffer()) alloc
   add_table "cmap" (cmap_w.GetBuffer()) alloc
+  add_table "OS/2" (os2_w.GetBuffer()) alloc
 
   let tables = List.rev alloc.tables
   let n_tables = tables.Length

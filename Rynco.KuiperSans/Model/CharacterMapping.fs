@@ -54,7 +54,7 @@ type CharacterMappingTable = {
   tables: EncodingRecord list
 }
 
-let write_cmap (writer: System.IO.BinaryWriter) (table: CharacterMappingTable) =
+let write_cmap (table: CharacterMappingTable) (writer: System.IO.BinaryWriter) =
   write_u16_be writer 0us
   write_u16_be writer (uint16 table.tables.Length)
 
