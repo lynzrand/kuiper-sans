@@ -46,10 +46,13 @@ type private TableAllocator = {
   mutable tables: IncompleteTableRecord list // Reverse order
 }
 
+let calc_tag (name: string) =
+  let tag = System.BitConverter.ToUInt32(System.Text.Encoding.ASCII.GetBytes(name), 0)
+  to_be_32 tag
+
 let private add_table (name: string) (buffer: uint8 array) (alloc: TableAllocator) =
   let checksum = calc_table_checksum (new System.Memory<uint8>(buffer))
-  let tag = System.BitConverter.ToUInt32(System.Text.Encoding.ASCII.GetBytes(name), 0)
-  let tag = Util.Writer.to_be_32 tag
+  let tag = calc_tag name
   let record = {
     tag = tag
     checksum = checksum
@@ -64,8 +67,8 @@ let make_font
   (name: Model.NameTable.NameTable)
   (post: Model.PostScriptData.PostScriptData)
   (glyf: Model.GlyphData.GlyphTable)
-  // TODO: `cmap` table is missing
-  =
+  (cmap: Model.CharacterMapping.CharacterMappingTable)
+  : uint8 array =
   let maxp = Model.GlyphData.generate_maxp glyf
 
   // Wow that's a lot of streams to write to
@@ -77,6 +80,7 @@ let make_font
   let glyf_w = new System.IO.MemoryStream()
   let loca_w = new System.IO.MemoryStream()
   let maxp_w = new System.IO.MemoryStream()
+  let cmap_w = new System.IO.MemoryStream()
 
   Model.Header.write_head head (new System.IO.BinaryWriter(head_w))
   Model.HorizontalHeader.write_hhea hhea (new System.IO.BinaryWriter(hhea_w))
@@ -96,6 +100,7 @@ let make_font
   pad_to_4bytes (new System.IO.BinaryWriter(glyf_w))
   pad_to_4bytes (new System.IO.BinaryWriter(loca_w))
   pad_to_4bytes (new System.IO.BinaryWriter(maxp_w))
+  pad_to_4bytes (new System.IO.BinaryWriter(cmap_w))
 
   let alloc = { tables = [] }
   add_table "head" (head_w.GetBuffer()) alloc
@@ -106,6 +111,7 @@ let make_font
   add_table "glyf" (glyf_w.GetBuffer()) alloc
   add_table "loca" (loca_w.GetBuffer()) alloc
   add_table "maxp" (maxp_w.GetBuffer()) alloc
+  add_table "cmap" (cmap_w.GetBuffer()) alloc
 
   let tables = List.rev alloc.tables
   let n_tables = tables.Length
@@ -152,5 +158,17 @@ let make_font
   List.iter (fun record -> final_writer.Write(record.buffer)) tables
 
   // TODO: write the final checksum offset in the head table
+  let head_tag = calc_tag "head"
+  let head_table_offset =
+    (List.fold2 (fun acc record offset -> if record.tag = head_tag then offset else acc) 0 tables offsets)
+
+  let buffer = final_stream.GetBuffer()
+  let checksum = calc_table_checksum (new System.Memory<uint8>(buffer))
+  // To compute: set it to 0, sum the entire font as uint32, then store 0xB1B0AFBA - sum. If the font is used as a component in a font collection file, the value of this field will be invalidated by changes to the file structure and font table directory, and must be ignored.
+  let checksum_adjustment = 0xB1B0AFBAu - checksum
+  let checksum_field_offset = 8
+  final_writer.Seek(head_table_offset + checksum_field_offset, System.IO.SeekOrigin.Begin)
+  |> ignore
+  write_u32_be final_writer (uint32 checksum_adjustment)
 
   final_stream.GetBuffer()

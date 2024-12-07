@@ -15,6 +15,7 @@
     <Compile Include="Model/HorizontalMetrics.fs" />
     <Compile Include="Model/NameTable.fs" />
     <Compile Include="Model/PostScriptData.fs" />
+    <Compile Include="Model/CharacterMapping.fs" />
 
     <Compile Include="Program.fs" />
 </ItemGroup>
