@@ -17,6 +17,7 @@
     <Compile Include="Model/PostScriptData.fs" />
     <Compile Include="Model/CharacterMapping.fs" />
     <Compile Include="Model/Os2Data.fs" />
+    <Compile Include="Model.fs" />
 
     <Compile Include="Program.fs" />
 </ItemGroup>
