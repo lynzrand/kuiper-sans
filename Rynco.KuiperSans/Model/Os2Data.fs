@@ -3,7 +3,7 @@
 module Rynco.KuiperSans.Model.Os2Data
 
 open Rynco.KuiperSans.Util.Math
-open Rynco.KuiperSans.Util.Writer
+open Rynco.KuiperSans.Util.IO
 
 type WeightClass =
   | Thin = 100us
@@ -35,6 +35,7 @@ type UsagePermissionKind =
 
 [<System.Flags>]
 type FsTypeUpper =
+  | Nothing = 0x0000us
   | NoSubsetting = 0x0100us
   | BitmapEmbeddingOnly = 0x0200us
 

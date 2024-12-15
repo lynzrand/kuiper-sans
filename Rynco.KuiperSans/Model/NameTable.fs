@@ -4,7 +4,7 @@
 /// See: https://learn.microsoft.com/zh-cn/typography/opentype/spec/name
 module Rynco.KuiperSans.Model.NameTable
 
-open Rynco.KuiperSans.Util.Writer
+open Rynco.KuiperSans.Util.IO
 
 
 /// The version of the name table. Always 1.

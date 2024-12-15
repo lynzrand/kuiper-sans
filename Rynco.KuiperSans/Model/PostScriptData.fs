@@ -4,7 +4,7 @@
 module Rynco.KuiperSans.Model.PostScriptData
 
 open Rynco.KuiperSans.Util.Math
-open Rynco.KuiperSans.Util.Writer
+open Rynco.KuiperSans.Util.IO
 
 let private version = 0x00030000ul // version 3.0
 let private unknown_mem = 0u

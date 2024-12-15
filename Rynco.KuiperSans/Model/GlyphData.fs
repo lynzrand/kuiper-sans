@@ -29,6 +29,9 @@ type SimpleGlyphFlagsOrRepeat =
   | Flags of SimpleGlyphFlags
   | RepeatCount of uint8
 
+  static member op_Implicit(f: SimpleGlyphFlags) : SimpleGlyphFlagsOrRepeat = Flags f
+  static member op_Implicit(r: uint8) : SimpleGlyphFlagsOrRepeat = RepeatCount r
+
 type SimpleGlyphData = {
   contour_end_point_indices: uint16[]
   instructions: uint8[]
@@ -104,7 +107,7 @@ type MaxProfileTable = {
   max_component_depth: uint16
 }
 
-open Rynco.KuiperSans.Util.Writer
+open Rynco.KuiperSans.Util.IO
 
 let private write_glyph (glyph: GlyphData) (w: BinaryWriter) =
   let write_glyph_common (common: CommonGlyphHeader) =

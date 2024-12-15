@@ -3,7 +3,7 @@
 /// See: https://learn.microsoft.com/zh-cn/typography/opentype/spec/hhea
 module Rynco.KuiperSans.Model.HorizontalHeader
 
-open Rynco.KuiperSans.Util.Writer
+open Rynco.KuiperSans.Util.IO
 open Rynco.KuiperSans.Util.Math
 
 let private major_version = 1us

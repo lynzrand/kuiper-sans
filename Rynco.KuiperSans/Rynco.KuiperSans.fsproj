@@ -6,9 +6,11 @@
   </PropertyGroup>
 
 <ItemGroup>
+    <Compile Include="Util/Operator.fs" />
     <Compile Include="Util/Math.fs" />
-    <Compile Include="Util/Writer.fs" />
+    <Compile Include="Util/IO.fs" />
     
+    <Compile Include="Model/Inst.fs" />
     <Compile Include="Model/GlyphData.fs" />
     <Compile Include="Model/Header.fs"/>
     <Compile Include="Model/HorizontalHeader.fs" />
@@ -17,7 +19,7 @@
     <Compile Include="Model/PostScriptData.fs" />
     <Compile Include="Model/CharacterMapping.fs" />
     <Compile Include="Model/Os2Data.fs" />
-    <Compile Include="Model.fs" />
+    <Compile Include="FontFile.fs" />
 
     <Compile Include="Program.fs" />
 </ItemGroup>

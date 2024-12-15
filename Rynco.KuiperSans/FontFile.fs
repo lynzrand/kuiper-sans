@@ -1,6 +1,6 @@
-﻿module Rynco.KuiperSans.Program
+﻿module Rynco.KuiperSans.FontFile
 
-open Util.Writer
+open Util.IO
 
 type TableDirectory = {
   version: uint32
@@ -26,7 +26,7 @@ let calc_table_checksum (table: uint8 System.Memory) : uint32 =
     System.Runtime.InteropServices.MemoryMarshal.Cast<uint8, uint32>(table.Span)
   let mutable sum = 0u
   for i in 0 .. u32_len - 1 do
-    sum <- sum + u32_tbl.[i]
+    sum <- sum + (to_be_32 u32_tbl.[i])
 
   sum
 
@@ -49,6 +49,9 @@ type private TableAllocator = {
 let calc_tag (name: string) =
   let tag = System.BitConverter.ToUInt32(System.Text.Encoding.ASCII.GetBytes(name), 0)
   to_be_32 tag
+
+let get_tag_name (tag: uint32) =
+  System.Text.Encoding.ASCII.GetString(System.BitConverter.GetBytes(to_be_32 tag))
 
 let private add_table (name: string) (buffer: uint8 array) (alloc: TableAllocator) =
   let checksum = calc_table_checksum (new System.Memory<uint8>(buffer))
@@ -172,9 +175,54 @@ let make_font
   let checksum = calc_table_checksum (new System.Memory<uint8>(buffer))
   // To compute: set it to 0, sum the entire font as uint32, then store 0xB1B0AFBA - sum. If the font is used as a component in a font collection file, the value of this field will be invalidated by changes to the file structure and font table directory, and must be ignored.
   let checksum_adjustment = 0xB1B0AFBAu - checksum
-  let checksum_field_offset = 8
-  final_writer.Seek(head_table_offset + checksum_field_offset, System.IO.SeekOrigin.Begin)
-  |> ignore
-  write_u32_be final_writer (uint32 checksum_adjustment)
+  let adjusted_head = {
+    head with
+        checksum_adjustment = checksum_adjustment
+  }
+  final_stream.Seek(head_table_offset, System.IO.SeekOrigin.Begin) |> ignore
+  Model.Header.write_head adjusted_head final_writer
 
   final_stream.GetBuffer()
+
+let read_file_header (r: System.IO.BinaryReader) : TableDirectory = {
+  version = read_u32_be r
+  n_tables = read_u16_be r
+  search_range = read_u16_be r
+  entry_selector = read_u16_be r
+  range_shift = read_u16_be r
+}
+
+let read_table_record (r: System.IO.BinaryReader) : TableRecord = {
+  tag = read_u32_be r
+  checksum = read_u32_be r
+  offset = read_u32_be r
+  length = read_u32_be r
+}
+
+let verify_font_file (font: uint8 array) =
+  let r = new System.IO.BinaryReader(new System.IO.MemoryStream(font))
+  let header = read_file_header r
+  let records = Array.init (int header.n_tables) (fun _ -> read_table_record r)
+
+  // Verify checksums
+  for record in records do
+    r.BaseStream.Seek(int64 record.offset, System.IO.SeekOrigin.Begin) |> ignore
+    let buffer = r.ReadBytes(int record.length)
+    let checksum = calc_table_checksum (new System.Memory<uint8>(buffer))
+    let tbl_name = get_tag_name record.tag
+    if checksum <> record.checksum && tbl_name <> "head" then
+      failwithf "Checksum mismatch for table %s" (get_tag_name record.tag)
+
+  // Verify checksum adjustment in head table
+  // head.checksum_adjustment = 0xB1B0AFBA - sum(font)
+  // => sum(font) + head.checksum_adjustment = 0xB1B0AFBA
+  let whole_file_memory = new System.Memory<uint8>(font)
+  let whole_file_checksum = calc_table_checksum whole_file_memory
+
+  let head_record: TableRecord = Array.find (fun r -> r.tag = calc_tag "head") records
+  r.BaseStream.Seek(int64 head_record.offset, System.IO.SeekOrigin.Begin)
+  |> ignore
+  // let head = Model.Header.read_head r
+  let expected_checksum = 0xB1B0AFBAu
+  if whole_file_checksum <> expected_checksum then
+    failwithf "Checksum mismatch for the whole file: expected %X, got %X" expected_checksum whole_file_checksum

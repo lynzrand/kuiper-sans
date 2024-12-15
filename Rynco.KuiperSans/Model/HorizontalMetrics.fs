@@ -4,7 +4,7 @@
 module Rynco.KuiperSans.Model.HorizontalMetrics
 
 open Rynco.KuiperSans.Util.Math
-open Rynco.KuiperSans.Util.Writer
+open Rynco.KuiperSans.Util.IO
 
 type LongHorizontalMetric = {
   advance_width: ufword

@@ -2,7 +2,7 @@
 
 module Rynco.KuiperSans.Model.CharacterMapping
 
-open Rynco.KuiperSans.Util.Writer
+open Rynco.KuiperSans.Util.IO
 
 let cmap_version = 0us
 let platform_id = 0us // Unicode
