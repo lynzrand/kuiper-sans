@@ -63,9 +63,9 @@ let write_cmap (table: CharacterMappingTable) (writer: System.IO.BinaryWriter) =
 
   // Write dummy records to skip to the actual tables
   let start_of_records = writer.BaseStream.Position
-  for _ in table.tables do
-    write_u16_be writer platform_id
-    write_u16_be writer encoding_id
+  for tbl in table.tables do
+    write_u16_be writer tbl.encoding_id
+    write_u16_be writer tbl.platform_id
     write_u32_be writer (uint32 0)
 
   List.iteri

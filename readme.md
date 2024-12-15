@@ -29,6 +29,21 @@ The name "Kuiper Sans" is currently a placeholder.
 - [ ] Font itself
   - [ ] ASCII range
 
+## Building
+
+You will need a relatively new F# compiler to build the font. Other than that, it's just `dotnet run --project Rynco.KuiperSans`.
+
+## Developing
+
+`opentype.js` is used to verify the correctness of the font face output. You will need `pnpm` to install dependencies and `node` to run the verification scripts.
+
+## Shortcuts
+
+If you have `just` installed, you can run:
+
+- `just build` for building
+- `just verify` for verifying the output
+
 ## License
 
 Please do patiently wait until this thing is at least usable.

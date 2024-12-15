@@ -12,7 +12,7 @@
     
     <Compile Include="Model/Inst.fs" />
     <Compile Include="Model/GlyphData.fs" />
-    <Compile Include="Model/Header.fs"/>
+    <Compile Include="Model/Header.fs" />
     <Compile Include="Model/HorizontalHeader.fs" />
     <Compile Include="Model/HorizontalMetrics.fs" />
     <Compile Include="Model/NameTable.fs" />
@@ -22,6 +22,10 @@
     <Compile Include="FontFile.fs" />
 
     <Compile Include="Program.fs" />
+</ItemGroup>
+
+<ItemGroup>
+  <PackageReference Include="LunarLabs.Fonts" Version="1.0.3" />
 </ItemGroup>
 
 </Project>

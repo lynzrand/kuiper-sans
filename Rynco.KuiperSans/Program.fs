@@ -23,22 +23,28 @@ let head: Header.HeaderTable = {
 }
 
 // Map all characters to glyph 0
+let cmap_sub =
+  CharacterMapping.CmapSubtable.Format12 {
+    language = uint32 0
+    groups = [
+      {
+        start_code = uint32 0
+        end_code = uint32 0x10FFFF
+        start_glyph_id = uint32 0
+      }
+    ]
+  }
 let cmap: CharacterMapping.CharacterMappingTable = {
   tables = [
     {
-      platform_id = uint16 0
-      encoding_id = uint16 4
-      table =
-        CharacterMapping.CmapSubtable.Format12 {
-          language = uint32 0
-          groups = [
-            {
-              start_code = uint32 0
-              end_code = uint32 0x10FFFF
-              start_glyph_id = uint32 0
-            }
-          ]
-        }
+      platform_id = uint16 0 // Unicode
+      encoding_id = uint16 4 // Unicode 2+ full
+      table = cmap_sub
+    }
+    {
+      platform_id = uint16 3 // Microsoft
+      encoding_id = uint16 10 // Unicode full
+      table = cmap_sub
     }
   ]
 }
@@ -182,5 +188,7 @@ let os2: Os2Data.Os2Table = {
 
 let buf = FontFile.make_font head hhea hmtx name post glyf cmap os2
 
+// Do basic verification
 FontFile.verify_font_file buf
-System.IO.File.WriteAllBytes("KuiperSans-Regular.ttf", buf)
+
+System.IO.File.WriteAllBytes("dist/KuiperSans-Regular.ttf", buf)
